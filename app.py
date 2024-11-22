@@ -1,5 +1,9 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi
+from linebot.models import TextSendMessage
+from datetime import datetime
+import json, requests, os, image.ImgProcess as ImgProcess, model.CnnModel as CnnModel
+
 
 from linebot.v3 import (
     WebhookHandler
@@ -23,9 +27,7 @@ from linebot.v3.webhooks import (
     MessageEvent, FollowEvent, PostbackEvent, TextMessageContent, ImageMessageContent
 )
 
-from linebot.models import TextSendMessage
-import json, requests, os, CnnModel, DataProcess
-from datetime import datetime
+
 
 app = Flask(__name__)
 
