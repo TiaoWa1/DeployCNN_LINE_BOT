@@ -2,7 +2,9 @@ from flask import Flask, request, abort
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from datetime import datetime
-import json, requests, os, image.ImgProcess as ImgProcess, model.CnnModel as CnnModel
+from image.ImgProcess import Img_Process
+from model.CnnModel import Load_CnnModel
+import json, requests, os
 
 
 from linebot.v3 import (
@@ -64,6 +66,9 @@ def Say_Hello(event):
         )
     )
 
+global file_path
+file_path = "null"
+
 @handler.add(MessageEvent, message=ImageMessageContent)
 def Image_message_received(event):
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -77,15 +82,25 @@ def Image_message_received(event):
     with open(file_path, 'wb') as f:
         for chunk in message_content.iter_content():
             f.write(chunk)
-    
+
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text="影像已儲存!")
     )
 
-
-
-
+@handler.add(MessageEvent, message=TextMessageContent)
+def Reply_Predict_Result(event):
+    line_bot_api = Line_bot_api()
+    if event.message.text == '位置':
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text=file_path)]
+            )
+        )
+    # if event.message.text == '預測':
+# img = Img_Process("./image/Example.jpg")
+# print(img.shape)
 
 
 if __name__ == '__main__':
