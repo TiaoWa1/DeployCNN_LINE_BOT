@@ -5,6 +5,7 @@ from datetime import datetime
 from image.ImgProcess import Img_Process
 from model.CnnModel import Load_CnnModel
 import json, requests, os
+import numpy as np
 
 
 from linebot.v3 import (
@@ -98,8 +99,17 @@ def Reply_Predict_Result(event):
                 messages=[TextMessage(text=file_path)]
             )
         )
-    # if event.message.text == '預測':
-# img = Img_Process("./image/Example.jpg")
+    if event.message.text == '預測':
+        img = Img_Process("./image/Example.jpg")
+        model = Load_CnnModel()
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="模型載入完成並準備預測!")]
+            )
+        )
+        result = model.predict(img)
+        print(np.argmax(result, axis=1))
 # print(img.shape)
 
 
