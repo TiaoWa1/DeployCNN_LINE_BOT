@@ -41,7 +41,7 @@ def check_gpu_memory():
         print(f"GPU 記憶體使用狀態: {mem_info}")
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/image', static_folder='./image')
 
 CHANNEL_ACCESS_TOKEN = os.getenv('CHANNEL_ACCESS_TOKEN')
 configuration = Configuration(access_token=CHANNEL_ACCESS_TOKEN)
@@ -92,7 +92,6 @@ def Image_message_received(event):
     with open(file_path, 'wb') as f:
         for chunk in message_content.iter_content():
             f.write(chunk)
-
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text="影像已儲存!")
@@ -108,66 +107,277 @@ def Reply_Predict_Result(event):
                 messages=[TextMessage(text=file_path)]
             )
         )
-    if event.message.text == '預測':
-        img = Img_Process("./image/Example.jpg")
+    elif event.message.text == '預測':
+        img = Img_Process(file_path)
         model = Load_CnnModel()
         result = model.predict(img)
         Clear_model(model)
 
         url = request.root_url + '/static'
         url = url.replace("http", "https")
-        print(url)
-        Predict_Carousel_Template = CarouselTemplate(
-            columns=[
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/cat.jpg",
-                    title="Cat",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                ),
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/dog.jpg",
-                    title="dog",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                ),
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/fox.jpg",
-                    title="fox",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                ),
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/leopard.jpg",
-                    title="leopard",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                ),
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/lion.jpg",
-                    title="lion",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                ),
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/tiger.jpg",
-                    title="tiger",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                ),
-                CarouselColumn(
-                    thumbnailImageUrl=url+"/wolf.jpg",
-                    title="wolf",
-                    text="Percentage: ",
-                    actions=[MessageAction(label="test",text="test")]
-                )
-            ]
-        )
-        template_message = TemplateMessage(template=Predict_Carousel_Template, altText="錯誤!")
+        flex_json = {
+                    "type": "bubble",
+                    "hero": {
+                        "type": "image",
+                        "url": url.replace("/static", file_path.lstrip("./")),
+                        "size": "full",
+                        "aspectRatio": "20:13",
+                        "aspectMode": "cover",
+                        "action": {
+                        "type": "uri",
+                        "label": "Action",
+                        "uri": "https://linecorp.com"
+                        }
+                    },
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "md",
+                        "action": {
+                        "type": "uri",
+                        "label": "Action",
+                        "uri": "https://linecorp.com"
+                        },
+                        "contents": [
+                        {
+                            "type": "text",
+                            "text": "Prediction results",
+                            "weight": "bold",
+                            "size": "xl",
+                            "contents": []
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "contents": [
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/cat.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Cat",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][0] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/dog.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Dog",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][1] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/fox.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Fox",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][2] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/leopard.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Leopard",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][3] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/lion.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Lion",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][4] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/tiger.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Tiger",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][5] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "contents": [
+                                {
+                                    "type": "icon",
+                                    "url": url + "/wolf.jpg",
+                                    "size": "xl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Wolf",
+                                    "weight": "bold",
+                                    "flex": 0,
+                                    "margin": "sm",
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"Percentage: { result[0][6] * 100:.2f}",
+                                    "size": "sm",
+                                    "color": "#AAAAAA",
+                                    "align": "end",
+                                    "contents": []
+                                }
+                                ]
+                            }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "text": "Sauce, Onions, Pickles, Lettuce & Cheese",
+                            "size": "xxs",
+                            "color": "#AAAAAA",
+                            "wrap": True,
+                            "contents": []
+                        }
+                        ]
+                    },
+                    "footer": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                        {
+                            "type": "filler",
+                            "size": "xs"
+                        },
+                        {
+                            "type": "button",
+                            "action": {
+                            "type": "uri",
+                            "label": "Add to Cart",
+                            "uri": "https://linecorp.com"
+                            },
+                            "color": "#905C44",
+                            "style": "primary"
+                        }
+                        ]
+                    }
+                    }
+        flex_str = json.dumps(flex_json) 
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[template_message]
+                messages=[FlexMessage(alt_text='詳細說明', contents=FlexContainer.from_json(flex_str))]
             )
         )
 
