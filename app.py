@@ -111,7 +111,6 @@ def Reply_Predict_Result(event):
     if event.message.text == '預測':
         img = Img_Process("./image/Example.jpg")
         model = Load_CnnModel()
-        check_gpu_memory()
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
@@ -119,11 +118,60 @@ def Reply_Predict_Result(event):
             )
         )
         result = model.predict(img)
-        print(np.argmax(result, axis=1))
-        
         # Clear_model(model)
-        # tf.compat.v1.reset_default_graph()
-        # check_gpu_memory()
+        Predict_Carousel_Template = CarouselTemplate(
+            columns=[
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="1",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                ),
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="2",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                ),
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="3",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                ),
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="4",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                ),
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="5",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                ),
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="6",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                ),
+                CarouselColumn(
+                    thumbnailImageUrl="./image/Example.jpg",
+                    title="7",
+                    text="Test",
+                    actions=[MessageAction(text="test")]
+                )
+            ]
+        )
+        template_message = TemplateMessage(template=Predict_Carousel_Template, altText="錯誤!")
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="模型載入完成並準備預測!")]
+            )
+        )
 
 if __name__ == '__main__':
     app.run()

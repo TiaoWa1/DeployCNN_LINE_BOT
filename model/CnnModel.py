@@ -14,7 +14,7 @@ def Load_CnnModel():
     return model
 
 def Clear_model(Model_want_to_clear):
+    del Model_want_to_clear
     clear_session()
     tf.compat.v1.reset_default_graph()
     gc.collect()
-    del Model_want_to_clear
