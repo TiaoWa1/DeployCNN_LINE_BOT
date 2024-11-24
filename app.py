@@ -111,57 +111,54 @@ def Reply_Predict_Result(event):
     if event.message.text == '預測':
         img = Img_Process("./image/Example.jpg")
         model = Load_CnnModel()
-        line_bot_api.reply_message(
-            ReplyMessageRequest(
-                replyToken=event.reply_token,
-                messages=[TextMessage(text="模型載入完成並準備預測!")]
-            )
-        )
         result = model.predict(img)
-        # Clear_model(model)
+        Clear_model(model)
+        url = request.root_url + '/template_image'
+        url = url.replace("http", "https")
+        print(url)
         Predict_Carousel_Template = CarouselTemplate(
             columns=[
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="1",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/cat.jpg",
+                    title="Cat",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="2",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/dog.jpg",
+                    title="dog",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="3",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/fox.jpg",
+                    title="fox",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="4",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/leopard.jpg",
+                    title="leopard",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="5",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/lion.jpg",
+                    title="lion",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="6",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/tiger.jpg",
+                    title="tiger",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl="./image/Example.jpg",
-                    title="7",
-                    text="Test",
-                    actions=[MessageAction(text="test")]
+                    thumbnailImageUrl=url + "/wolf.jpg",
+                    title="wolf",
+                    text="Percentage: ",
+                    actions=[MessageAction(label="test",text="test")]
                 )
             ]
         )
@@ -169,7 +166,7 @@ def Reply_Predict_Result(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="模型載入完成並準備預測!")]
+                messages=[template_message]
             )
         )
 
