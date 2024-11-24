@@ -3,9 +3,10 @@ from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from datetime import datetime
 from image.ImgProcess import Img_Process
-from model.CnnModel import Load_CnnModel
+from model.CnnModel import Load_CnnModel, Clear_model
 import json, requests, os
 import numpy as np
+import tensorflow as tf
 
 
 from linebot.v3 import (
@@ -30,6 +31,14 @@ from linebot.v3.webhooks import (
     MessageEvent, FollowEvent, PostbackEvent, TextMessageContent, ImageMessageContent
 )
 
+def check_gpu_memory():
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if not gpus:
+        print("未偵測到 GPU")
+        return
+    for gpu in gpus:
+        mem_info = tf.config.experimental.get_memory_info('GPU:0')
+        print(f"GPU 記憶體使用狀態: {mem_info}")
 
 
 app = Flask(__name__)
@@ -102,6 +111,7 @@ def Reply_Predict_Result(event):
     if event.message.text == '預測':
         img = Img_Process("./image/Example.jpg")
         model = Load_CnnModel()
+        check_gpu_memory()
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
@@ -110,8 +120,10 @@ def Reply_Predict_Result(event):
         )
         result = model.predict(img)
         print(np.argmax(result, axis=1))
-# print(img.shape)
-
+        
+        # Clear_model(model)
+        # tf.compat.v1.reset_default_graph()
+        # check_gpu_memory()
 
 if __name__ == '__main__':
     app.run()
