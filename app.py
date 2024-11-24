@@ -100,6 +100,7 @@ def Image_message_received(event):
 @handler.add(MessageEvent, message=TextMessageContent)
 def Reply_Predict_Result(event):
     line_bot_api = Line_bot_api()
+
     if event.message.text == '位置':
         line_bot_api.reply_message(
             ReplyMessageRequest(
@@ -107,7 +108,7 @@ def Reply_Predict_Result(event):
                 messages=[TextMessage(text=file_path)]
             )
         )
-    elif event.message.text == '預測':
+    elif event.message.text == '預測' and file_path != "null":
         img = Img_Process(file_path)
         model = Load_CnnModel()
         result = model.predict(img)
@@ -377,7 +378,14 @@ def Reply_Predict_Result(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[FlexMessage(alt_text='詳細說明', contents=FlexContainer.from_json(flex_str))]
+                messages=[FlexMessage(alt_text='預測結果', contents=FlexContainer.from_json(flex_str))]
+            )
+        )
+    else:
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="指令錯誤或尚未上傳圖片")]
             )
         )
 
