@@ -113,49 +113,50 @@ def Reply_Predict_Result(event):
         model = Load_CnnModel()
         result = model.predict(img)
         Clear_model(model)
-        url = request.root_url + '/template_image'
+
+        url = request.root_url + '/static'
         url = url.replace("http", "https")
         print(url)
         Predict_Carousel_Template = CarouselTemplate(
             columns=[
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/cat.jpg",
+                    thumbnailImageUrl=url+"/cat.jpg",
                     title="Cat",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/dog.jpg",
+                    thumbnailImageUrl=url+"/dog.jpg",
                     title="dog",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/fox.jpg",
+                    thumbnailImageUrl=url+"/fox.jpg",
                     title="fox",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/leopard.jpg",
+                    thumbnailImageUrl=url+"/leopard.jpg",
                     title="leopard",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/lion.jpg",
+                    thumbnailImageUrl=url+"/lion.jpg",
                     title="lion",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/tiger.jpg",
+                    thumbnailImageUrl=url+"/tiger.jpg",
                     title="tiger",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
                 ),
                 CarouselColumn(
-                    thumbnailImageUrl=url + "/wolf.jpg",
+                    thumbnailImageUrl=url+"/wolf.jpg",
                     title="wolf",
                     text="Percentage: ",
                     actions=[MessageAction(label="test",text="test")]
