@@ -7,6 +7,7 @@ from model.CnnModel import Load_CnnModel, Clear_model
 import json, requests, os
 import numpy as np
 import tensorflow as tf
+import time
 
 
 from linebot.v3 import (
@@ -38,7 +39,7 @@ CHANNEL_ACCESS_TOKEN = os.getenv('CHANNEL_ACCESS_TOKEN')
 configuration = Configuration(access_token=CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
-def Line_bot_api():
+def Get_MessagingApi():
     with ApiClient(configuration) as api_client:
         return MessagingApi(api_client)
 
@@ -59,7 +60,7 @@ def callback():
 
 @handler.add(FollowEvent)
 def Say_Hello(event):
-    line_bot_api = Line_bot_api()
+    line_bot_api = Get_MessagingApi()
     line_bot_api.reply_message(
         ReplyMessageRequest(
             replyToken=event.reply_token,
@@ -83,14 +84,45 @@ def Image_message_received(event):
     with open(file_path, 'wb') as f:
         for chunk in message_content.iter_content():
             f.write(chunk)
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text="影像已儲存!")
+
+    line_bot_api = Get_MessagingApi()
+    SelectAction = QuickReply(
+        items=[
+            QuickReplyItem(
+                action=MessageAction(
+                    label="開始預測",
+                    text="預測"
+                )
+            ),
+            QuickReplyItem(
+                action=MessageAction(
+                    label="查看檔案位置",
+                    text="位置"
+                )
+            )
+        ]
     )
+    
+    line_bot_api.reply_message(
+        ReplyMessageRequest(
+            replyToken=event.reply_token,
+            messages=[TextMessage(
+                quickReply=SelectAction,
+                text="收到圖片了,請選擇下一步"
+            )]
+        )
+    )
+    # line_bot_api.reply_message(
+    #     event.reply_token,
+    #     TextSendMessage(
+    #         text="收到圖片了,請選擇下一步",
+    #         quick_reply=SelectAction
+    #     )
+    # )
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def Reply_Predict_Result(event):
-    line_bot_api = Line_bot_api()
+    line_bot_api = Get_MessagingApi()
 
     if event.message.text == '位置':
         line_bot_api.reply_message(
