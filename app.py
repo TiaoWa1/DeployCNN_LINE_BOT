@@ -358,38 +358,40 @@ def Reply_Predict_Result(event):
                                 ]
                             }
                             ]
-                        },
-                        {
-                            "type": "text",
-                            "text": "Sauce, Onions, Pickles, Lettuce & Cheese",
-                            "size": "xxs",
-                            "color": "#AAAAAA",
-                            "wrap": True,
-                            "contents": []
                         }
                         ]
                     },
                     "footer": {
                         "type": "box",
-                        "layout": "vertical",
+                        "layout": "horizontal",
                         "contents": [
-                        {
-                            "type": "filler",
-                            "size": "xs"
-                        },
-                        {
-                            "type": "button",
-                            "action": {
-                            "type": "uri",
-                            "label": "Add to Cart",
-                            "uri": "https://linecorp.com"
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "message",
+                                    "label": "Correct",
+                                    "text": "正確"
+                                },
+                                "color": "#905C44",
+                                "style": "primary",
+                                "flex": 1
                             },
-                            "color": "#905C44",
-                            "style": "primary"
-                        }
-                        ]
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "message",
+                                    "label": "Incorrect",
+                                    "text": "不正確"
+                                },
+                                "color": "#905C44",
+                                "style": "primary",
+                                "flex": 1
+                            }
+                        ],
+                        "spacing": "md",
+                        "justifyContent": "space-between"
                     }
-                    }
+                }
         flex_str = json.dumps(flex_json) 
         line_bot_api.reply_message(
             ReplyMessageRequest(
