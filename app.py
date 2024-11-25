@@ -112,13 +112,6 @@ def Image_message_received(event):
             )]
         )
     )
-    # line_bot_api.reply_message(
-    #     event.reply_token,
-    #     TextSendMessage(
-    #         text="收到圖片了,請選擇下一步",
-    #         quick_reply=SelectAction
-    #     )
-    # )
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def Reply_Predict_Result(event):
