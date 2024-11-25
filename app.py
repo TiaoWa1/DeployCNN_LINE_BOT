@@ -31,15 +31,6 @@ from linebot.v3.webhooks import (
     MessageEvent, FollowEvent, PostbackEvent, TextMessageContent, ImageMessageContent
 )
 
-def check_gpu_memory():
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if not gpus:
-        print("未偵測到 GPU")
-        return
-    for gpu in gpus:
-        mem_info = tf.config.experimental.get_memory_info('GPU:0')
-        print(f"GPU 記憶體使用狀態: {mem_info}")
-
 
 app = Flask(__name__, static_url_path='/image', static_folder='./image')
 
@@ -114,13 +105,13 @@ def Reply_Predict_Result(event):
         result = model.predict(img)
         Clear_model(model)
 
-        url = request.root_url + '/static'
+        url = request.root_url
         url = url.replace("http", "https")
         flex_json = {
                     "type": "bubble",
                     "hero": {
                         "type": "image",
-                        "url": url.replace("/static", file_path.lstrip("./")),
+                        "url": url + file_path.lstrip("./"),
                         "size": "full",
                         "aspectRatio": "20:13",
                         "aspectMode": "cover",
@@ -158,7 +149,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/cat.jpg",
+                                    "url": url + "image/flex/cat.jpg",
                                     "size": "xl"
                                 },
                                 {
@@ -185,7 +176,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/dog.jpg",
+                                    "url": url + "image/flex/dog.jpg",
                                     "size": "xl"
                                 },
                                 {
@@ -212,7 +203,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/fox.jpg",
+                                    "url": url + "image/flex/fox.jpg",
                                     "size": "xl"
                                 },
                                 {
@@ -239,7 +230,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/leopard.jpg",
+                                    "url": url + "image/flex/leopard.jpg",
                                     "size": "xl"
                                 },
                                 {
@@ -266,7 +257,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/lion.jpg",
+                                    "url": url + "image/flex/lion.jpg",
                                     "size": "xl"
                                 },
                                 {
@@ -293,7 +284,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/tiger.jpg",
+                                    "url": url + "image/flex/tiger.jpg",
                                     "size": "xl"
                                 },
                                 {
@@ -320,7 +311,7 @@ def Reply_Predict_Result(event):
                                 "contents": [
                                 {
                                     "type": "icon",
-                                    "url": url + "/wolf.jpg",
+                                    "url": url + "image/flex/wolf.jpg",
                                     "size": "xl"
                                 },
                                 {
