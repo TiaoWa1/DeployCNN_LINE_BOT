@@ -370,7 +370,7 @@ def Reply_Predict_Result(event):
                                 "action": {
                                     "type": "message",
                                     "label": "Correct",
-                                    "text": "正確"
+                                    "text": "預測正確"
                                 },
                                 "color": "#905C44",
                                 "style": "primary",
@@ -381,7 +381,7 @@ def Reply_Predict_Result(event):
                                 "action": {
                                     "type": "message",
                                     "label": "Incorrect",
-                                    "text": "錯誤"
+                                    "text": "預測錯誤"
                                 },
                                 "color": "#905C44",
                                 "style": "primary",
@@ -408,8 +408,10 @@ def Reply_Predict_Result(event):
             ]
         )
         line_bot_api.reply_message(
-            replyToken=event.reply_token,
-            messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+            )
         )
 
     elif event.message.text == '預測錯誤' and file_path != "null":
@@ -421,8 +423,10 @@ def Reply_Predict_Result(event):
             ]
         )
         line_bot_api.reply_message(
-            replyToken=event.reply_token,
-            messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+            )
         )
 
     else:
@@ -493,15 +497,48 @@ def Get_Postback(event):
             ]
         )
         line_bot_api.reply_message(
-            replyToken=event.reply_token,
-            messages=[TextMessage(text="選擇這張圖片的標籤")],
-            quickReply=Select_label
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="選擇這張圖片的標籤", quickReply=Select_label)],
+            )
         )
 
-        
+    elif Postback_data in ["0", "1", "2", "3", "4", "5", "6"]:
+        label_list = ["貓", "狗", "狐", "豹", "獅子", "老虎", "狼"]
+        label = int(Postback_data)
+        url = request.root_url
+        url = url.replace("http", "https")
+        Show_Chosen = ButtonsTemplate(
+            thumbnailImageUrl=url + file_path.lstrip("./"),
+            title="這是 "+ label_list[label],
+            text="正確無誤?",
+            actions=[
+                PostbackAction(label="正確,開始訓練", data="Start train", displayText="正確"),
+                PostbackAction(label="有誤,重新選擇", data="Start train", displayText="重新選擇")
+            ]
+        )
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TemplateMessage(altText="ERROR", template=Show_Chosen)]
+            )
+        )
 
     elif Postback_data == "Dont Add":
-        pass
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="不要加入訓練")]
+            )
+        )
+
+    else:
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="無效的選擇")]
+            )
+        )
 
 if __name__ == '__main__':
     app.run()
