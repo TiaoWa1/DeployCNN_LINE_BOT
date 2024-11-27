@@ -381,7 +381,7 @@ def Reply_Predict_Result(event):
                                 "action": {
                                     "type": "message",
                                     "label": "Incorrect",
-                                    "text": "不正確"
+                                    "text": "錯誤"
                                 },
                                 "color": "#905C44",
                                 "style": "primary",
@@ -399,6 +399,32 @@ def Reply_Predict_Result(event):
                 messages=[FlexMessage(alt_text='預測結果', contents=FlexContainer.from_json(flex_str))]
             )
         )
+    elif event.message.text == '預測正確' and file_path != "null":
+        Confirm = ConfirmTemplate(
+            text="預測正確,是否將圖片加入訓練集?",
+            actions=[
+                PostbackAction(label="是", data="Add", displayText="將影像用做模型訓練"),
+                PostbackAction(label="否", data="Dont Add", displayText="不要將我的影像用作訓練")
+            ]
+        )
+        line_bot_api.reply_message(
+            replyToken=event.reply_token,
+            messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+        )
+
+    elif event.message.text == '預測錯誤' and file_path != "null":
+        Confirm = ConfirmTemplate(
+            text="預測錯誤,是否將圖片加入訓練集?",
+            actions=[
+                PostbackAction(label="是", data="Add", displayText="將影像用做模型訓練"),
+                PostbackAction(label="否", data="Dont Add", displayText="不要將我的影像用作訓練")
+            ]
+        )
+        line_bot_api.reply_message(
+            replyToken=event.reply_token,
+            messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+        )
+
     else:
         line_bot_api.reply_message(
             ReplyMessageRequest(
@@ -406,6 +432,76 @@ def Reply_Predict_Result(event):
                 messages=[TextMessage(text="指令錯誤或尚未上傳圖片")]
             )
         )
+
+@handler.add(PostbackEvent)
+def Get_Postback(event):
+    Postback_data = event.postback.data
+    line_bot_api = Get_MessagingApi()
+    
+    if Postback_data == "Add":
+        Select_label = QuickReply(
+            items=[
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="貓",
+                        data="0",
+                        displayText="這是貓"
+                    )
+                ),
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="狗",
+                        data="1",
+                        displayText="這是狗"
+                    )
+                ),
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="狐狸",
+                        data="2",
+                        displayText="這是狐狸"
+                    )
+                ),
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="豹",
+                        data="3",
+                        displayText="這是豹"
+                    )
+                ),
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="獅子",
+                        data="4",
+                        displayText="這是獅子"
+                    )
+                ),
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="老虎",
+                        data="5",
+                        displayText="這是老虎"
+                    )
+                ),
+                QuickReplyItem(
+                    action=PostbackAction(
+                        label="狼",
+                        data="6",
+                        displayText="這是狼"
+                    )
+                )
+            ]
+        )
+        line_bot_api.reply_message(
+            replyToken=event.reply_token,
+            messages=[TextMessage(text="選擇這張圖片的標籤")],
+            quickReply=Select_label
+        )
+
+        
+
+    elif Postback_data == "Dont Add":
+        pass
 
 if __name__ == '__main__':
     app.run()
