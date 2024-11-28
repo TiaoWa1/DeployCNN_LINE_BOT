@@ -1,0 +1,260 @@
+{
+    "type": "bubble",
+    "hero": {
+        "type": "image",
+        "url": "{url_placeholder}{file_path_placeholder}",
+        "size": "full",
+        "aspectRatio": "20:13",
+        "aspectMode": "cover",
+        "action": {
+        "type": "uri",
+        "label": "Action",
+        "uri": "https://linecorp.com"
+        }
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "md",
+        "action": {
+        "type": "uri",
+        "label": "Action",
+        "uri": "https://linecorp.com"
+        },
+        "contents": [
+        {
+            "type": "text",
+            "text": "Prediction results",
+            "weight": "bold",
+            "size": "xl",
+            "contents": []
+        },
+        {
+            "type": "box",
+            "layout": "vertical",
+            "spacing": "sm",
+            "contents": [
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/cat.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Cat",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/dog.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Dog",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/fox.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Fox",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/leopard.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Leopard",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/lion.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Lion",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/tiger.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Tiger",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}image/flex/wolf.jpg",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Wolf",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            }
+            ]
+        }
+        ]
+    },
+    "footer": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+            {
+                "type": "button",
+                "action": {
+                    "type": "message",
+                    "label": "Correct",
+                    "text": "預測正確"
+                },
+                "color": "#905C44",
+                "style": "primary",
+                "flex": 1
+            },
+            {
+                "type": "button",
+                "action": {
+                    "type": "message",
+                    "label": "Incorrect",
+                    "text": "預測錯誤"
+                },
+                "color": "#905C44",
+                "style": "primary",
+                "flex": 1
+            }
+        ],
+        "spacing": "md",
+        "justifyContent": "space-between"
+    }
+}
