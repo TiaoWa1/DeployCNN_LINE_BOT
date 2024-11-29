@@ -40,7 +40,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/cat.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
@@ -67,7 +67,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/dog.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
@@ -94,7 +94,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/fox.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
@@ -121,7 +121,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/leopard.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
@@ -148,7 +148,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/lion.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
@@ -175,7 +175,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/tiger.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
@@ -202,7 +202,7 @@
                 "contents": [
                 {
                     "type": "icon",
-                    "url": "{url_placeholder}image/flex/wolf.jpg",
+                    "url": "{url_placeholder}",
                     "size": "xl"
                 },
                 {
