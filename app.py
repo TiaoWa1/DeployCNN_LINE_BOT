@@ -391,8 +391,13 @@ def Reply_Predict_Result(event):
         #                 "justifyContent": "space-between"
         #             }
         #         }
-        flex_json = json.load("./image/flex/ResultFlex.json")
+        flex_json = json.load(open("./image/flex/ResultFlex.json", "r", encoding="utf-8"))
+        for i,item in enumerate(flex_json["body"]["contents"][1]["contents"]):
+            item["contents"][0]["url"]=f"{url}image/flex/{item['contents'][1]['text']}.jpg"
+            item["contents"][2]["text"]=f"Percentage: {result[0][i] * 100:.2f}"
+        flex_json["hero"]["url"]=f"{url}image/{file_path.split('/')[-1]}"
         flex_str = json.dumps(flex_json) 
+
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
@@ -514,7 +519,7 @@ def Get_Postback(event):
             text="正確無誤?",
             actions=[
                 PostbackAction(label="正確,開始訓練", data="Start train", displayText="正確"),
-                PostbackAction(label="有誤,重新選擇", data="Start train", displayText="重新選擇")
+                PostbackAction(label="有誤,重新選擇", data="Add", displayText="重新選擇")
             ]
         )
         line_bot_api.reply_message(
