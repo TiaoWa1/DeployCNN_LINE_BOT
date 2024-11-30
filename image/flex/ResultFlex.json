@@ -9,7 +9,7 @@
         "action": {
         "type": "uri",
         "label": "Action",
-        "uri": "https://linecorp.com"
+        "uri": "https://github.com/TiaoWa1/DeployCNN_LINE_BOT"
         }
     },
     "body": {
@@ -19,7 +19,7 @@
         "action": {
         "type": "uri",
         "label": "Action",
-        "uri": "https://linecorp.com"
+        "uri": "https://github.com/TiaoWa1/DeployCNN_LINE_BOT"
         },
         "contents": [
         {
