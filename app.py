@@ -4,6 +4,7 @@ from linebot.models import TextSendMessage
 from datetime import datetime
 from image.ImgProcess import Img_Process
 from model.CnnModel import Load_CnnModel, Clear_model
+from tensorflow.python.keras.utils import np_utils
 import json, requests, os
 import numpy as np
 import tensorflow as tf
@@ -68,7 +69,7 @@ def Say_Hello(event):
         )
     )
 
-global file_path
+
 file_path = "null"
 
 @handler.add(MessageEvent, message=ImageMessageContent)
@@ -144,6 +145,7 @@ def Reply_Predict_Result(event):
                 messages=[FlexMessage(alt_text='預測結果', contents=FlexContainer.from_json(flex_str))]
             )
         )
+
     elif event.message.text == '預測正確' and file_path != "null":
         Confirm = ConfirmTemplate(
             text="預測正確,是否將圖片加入訓練集?",
@@ -182,63 +184,24 @@ def Reply_Predict_Result(event):
             )
         )
 
+
+
 @handler.add(PostbackEvent)
 def Get_Postback(event):
+    global labels
     Postback_data = event.postback.data
     line_bot_api = Get_MessagingApi()
     
     if Postback_data == "Add":
         Select_label = QuickReply(
             items=[
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="貓",
-                        data="0",
-                        displayText="這是貓"
-                    )
-                ),
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="狗",
-                        data="1",
-                        displayText="這是狗"
-                    )
-                ),
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="狐狸",
-                        data="2",
-                        displayText="這是狐狸"
-                    )
-                ),
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="豹",
-                        data="3",
-                        displayText="這是豹"
-                    )
-                ),
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="獅子",
-                        data="4",
-                        displayText="這是獅子"
-                    )
-                ),
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="老虎",
-                        data="5",
-                        displayText="這是老虎"
-                    )
-                ),
-                QuickReplyItem(
-                    action=PostbackAction(
-                        label="狼",
-                        data="6",
-                        displayText="這是狼"
-                    )
-                )
+                QuickReplyItem(action=PostbackAction(label="貓", data="0", displayText="這是貓")),
+                QuickReplyItem(action=PostbackAction(label="狗", data="1", displayText="這是狗")),
+                QuickReplyItem(action=PostbackAction(label="狐狸", data="2", displayText="這是狐狸")),
+                QuickReplyItem(action=PostbackAction(label="豹", data="3", displayText="這是豹")),
+                QuickReplyItem(action=PostbackAction(label="獅子", data="4", displayText="這是獅子")),
+                QuickReplyItem(action=PostbackAction(label="老虎", data="5", displayText="這是老虎")),
+                QuickReplyItem(action=PostbackAction(label="狼", data="6", displayText="這是狼"))
             ]
         )
         line_bot_api.reply_message(
@@ -250,12 +213,12 @@ def Get_Postback(event):
 
     elif Postback_data in ["0", "1", "2", "3", "4", "5", "6"]:
         label_list = ["貓", "狗", "狐", "豹", "獅子", "老虎", "狼"]
-        label = int(Postback_data)
+        labels = int(Postback_data)
         url = request.root_url
         url = url.replace("http", "https")
         Show_Chosen = ButtonsTemplate(
             thumbnailImageUrl=url + file_path.lstrip("./"),
-            title="這是 "+ label_list[label],
+            title="這是 "+ label_list[labels],
             text="正確無誤?",
             actions=[
                 PostbackAction(label="正確,開始訓練", data="Start train", displayText="正確"),
@@ -268,12 +231,25 @@ def Get_Postback(event):
                 messages=[TemplateMessage(altText="ERROR", template=Show_Chosen)]
             )
         )
-
+    
+    elif Postback_data == "Start train":
+        img = Img_Process(file_path)
+        model = Load_CnnModel()
+        labels = np_utils.to_categorical(np.array([labels]), 7)
+        train_history = model.fit(img, labels, epochs=10, batch_size=1, verbose=1)
+        model.save("./model/Animal_faces_CNN.h5")
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="訓練完成")]
+            )
+        )
+        
     elif Postback_data == "Dont Add":
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="不要加入訓練")]
+                messages=[TextMessage(text="不加入訓練,系統結束")]
             )
         )
 
