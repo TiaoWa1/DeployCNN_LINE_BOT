@@ -137,7 +137,7 @@ def Reply_Predict_Result(event):
             item["contents"][0]["url"]=f"{url}image/flex/{item['contents'][1]['text']}.jpg"
             item["contents"][2]["text"]=f"Percentage: {result[0][i] * 100:.2f}"
         flex_json["hero"]["url"]=f"{url}image/{file_path.split('/')[-1]}"
-        flex_str = json.dumps(flex_json) 
+        flex_str = json.dumps(flex_json)
 
         line_bot_api.reply_message(
             ReplyMessageRequest(
@@ -238,13 +238,21 @@ def Get_Postback(event):
         labels = np_utils.to_categorical(np.array([labels]), 7)
         train_history = model.fit(img, labels, epochs=10, batch_size=1, verbose=1)
         model.save("./model/Animal_faces_CNN.h5")
+        Clear_model(model)
+
+        Show_repredict_select = QuickReply(
+            items=[
+                QuickReplyItem(action=MessageAction(label="Yes", text="預測")),
+                QuickReplyItem(action=PostbackAction(label="No", displayText="不需要", data="Exit the System"))
+            ]
+        )
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="訓練完成")]
+                messages=[TextMessage(text="訓練完成,需要重新預測嗎?", quickReply=Show_repredict_select)]
             )
         )
-        
+
     elif Postback_data == "Dont Add":
         line_bot_api.reply_message(
             ReplyMessageRequest(
@@ -257,7 +265,7 @@ def Get_Postback(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="無效的選擇")]
+                messages=[TextMessage(text="系統結束")]
             )
         )
 
