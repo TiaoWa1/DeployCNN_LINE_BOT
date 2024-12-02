@@ -59,6 +59,67 @@ def callback():
 
     return 'OK'
 
+def create_rich_menu():
+    line_bot_api = Get_MessagingApi()
+    with ApiClient(configuration) as api_client:
+        line_bot_blob_api = MessagingApiBlob(api_client)
+
+    areas=[
+        RichMenuArea(
+            bounds=RichMenuBounds(
+                x=0,
+                y=0,
+                width=833,
+                height=843
+            ),
+            action=MessageAction(text="這是A")
+        ),
+        RichMenuArea(
+            bounds=RichMenuBounds(
+                x=833,
+                y=0,
+                width=833,
+                height=843
+            ),
+            action=MessageAction(text="這是B")
+        ),
+        RichMenuArea(
+            bounds=RichMenuBounds(
+                x=1666,
+                y=0,
+                width=833,
+                height=843
+            ),
+            action=MessageAction(text="這是C")
+        )
+    ]
+
+    rich_menu_to_create = RichMenuRequest(
+        size=RichMenuSize(
+            width=2500,
+            height=843
+        ),
+        selected=True,
+        name="圖文選單",
+        chatBarText="查看更多",
+        areas=areas
+    )
+
+    rich_menu_id = line_bot_api.create_rich_menu(
+        rich_menu_request=rich_menu_to_create
+    ).rich_menu_id
+    
+    with open('./image/menu.png', 'rb') as image:
+        line_bot_blob_api.set_rich_menu_image(
+            rich_menu_id=rich_menu_id,
+            body=bytearray(image.read()),
+            _headers={'Content-Type': 'image/png'}
+        )
+        
+    line_bot_api.set_default_rich_menu(rich_menu_id)
+
+create_rich_menu()
+
 @handler.add(FollowEvent)
 def Say_Hello(event):
     line_bot_api = Get_MessagingApi()
@@ -96,9 +157,10 @@ def Image_message_received(event):
                 )
             ),
             QuickReplyItem(
-                action=MessageAction(
-                    label="查看檔案位置",
-                    text="位置"
+                action=PostbackAction(
+                    label="開始訓練",
+                    displayText="訓練開始",
+                    data="Add"
                 )
             )
         ]
@@ -236,7 +298,7 @@ def Get_Postback(event):
         img = Img_Process(file_path)
         model = Load_CnnModel()
         labels = np_utils.to_categorical(np.array([labels]), 7)
-        train_history = model.fit(img, labels, epochs=10, batch_size=1, verbose=1)
+        train_history = model.fit(img, labels, epochs=5, batch_size=1, verbose=1)
         model.save("./model/Animal_faces_CNN.h5")
         Clear_model(model)
 
