@@ -90,7 +90,7 @@ def create_rich_menu():
                 width=833,
                 height=843
             ),
-            action=MessageAction(text="這是C")
+            action=MessageAction(text="BOT 使用方法")
         )
     ]
 
@@ -187,6 +187,15 @@ def Reply_Predict_Result(event):
                 messages=[TextMessage(text=file_path)]
             )
         )
+        
+    elif event.message.text == 'BOT 使用方法':
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[TextMessage(text="上傳圖片->選擇預測或訓練->模型->結果")]
+            )
+        )
+
     elif event.message.text == '預測' and file_path != "null":
         img = Img_Process(file_path)
         model = Load_CnnModel()
