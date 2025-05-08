@@ -8,7 +8,7 @@ from tensorflow.python.keras.utils import np_utils
 import json, requests, os
 import numpy as np
 import tensorflow as tf
-import time
+import time, random
 
 
 from linebot.v3 import (
@@ -72,7 +72,7 @@ def create_rich_menu():
                 width=833,
                 height=843
             ),
-            action=MessageAction(text="這是A")
+            action=MessageAction(text="我要看範例圖片")
         ),
         RichMenuArea(
             bounds=RichMenuBounds(
@@ -81,7 +81,7 @@ def create_rich_menu():
                 width=833,
                 height=843
             ),
-            action=MessageAction(text="這是B")
+            action=MessageAction(text="BOT 使用方法")
         ),
         RichMenuArea(
             bounds=RichMenuBounds(
@@ -90,7 +90,7 @@ def create_rich_menu():
                 width=833,
                 height=843
             ),
-            action=MessageAction(text="BOT 使用方法")
+            action=URIAction(uri="https://github.com/TiaoWa1", label="BOT 作者資訊")
         )
     ]
 
@@ -109,11 +109,11 @@ def create_rich_menu():
         rich_menu_request=rich_menu_to_create
     ).rich_menu_id
     
-    with open('./image/menu.png', 'rb') as image:
+    with open('./image/menu.jpg', 'rb') as image:
         line_bot_blob_api.set_rich_menu_image(
             rich_menu_id=rich_menu_id,
             body=bytearray(image.read()),
-            _headers={'Content-Type': 'image/png'}
+            _headers={'Content-Type': 'image/jpeg'}
         )
         
     line_bot_api.set_default_rich_menu(rich_menu_id)
@@ -122,11 +122,17 @@ create_rich_menu()
 
 @handler.add(FollowEvent)
 def Say_Hello(event):
+    Hello_text  = (
+        "👋 嗨嗨～我是 動物辨識小助手\n"
+        "我可以幫你辨識以下這些動物：\n"
+        "🐱貓、🐶狗、🐆豹、🦁獅、🐯虎、🦊狐、🐺狼\n"
+        "📸 歡迎直接傳一張圖片給我，也可以點擊範例圖片的icon或直接輸入「範例圖片」，就能看到各種動物的範例影像喔!"
+    )
     line_bot_api = Get_MessagingApi()
     line_bot_api.reply_message(
         ReplyMessageRequest(
             replyToken=event.reply_token,
-            messages=[TextMessage(text="Hi")]
+            messages=[TextMessage(text=Hello_text)]
         )
     )
 
@@ -187,12 +193,44 @@ def Reply_Predict_Result(event):
                 messages=[TextMessage(text=file_path)]
             )
         )
-        
+    elif event.message.text in ['我要看範例圖片', '範例圖片']:
+        Choose_Animal = QuickReply(
+            items=[
+                QuickReplyItem(action=PostbackAction(label="🐱貓", data="cat", displayText="我要看貓的範例圖片")),
+                QuickReplyItem(action=PostbackAction(label="🐶狗", data="dog", displayText="我要看狗的範例圖片")),
+                QuickReplyItem(action=PostbackAction(label="🦊狐狸", data="fox", displayText="我要看狐狸的範例圖片")),
+                QuickReplyItem(action=PostbackAction(label="🐆豹", data="leopard", displayText="我要看豹的範例圖片")),
+                QuickReplyItem(action=PostbackAction(label="🦁獅子", data="lion", displayText="我要看獅子的範例圖片")),
+                QuickReplyItem(action=PostbackAction(label="🐯老虎", data="tiger", displayText="我要看老虎的範例圖片")),
+                QuickReplyItem(action=PostbackAction(label="🐺狼", data="wolf", displayText="我要看狼的範例圖片"))
+            ]
+        )
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken = event.reply_token,
+                messages = [TextMessage(
+                    quickReply = Choose_Animal,
+                    text = "想看哪種動物的範例圖片呢？請選擇下方類別 🐾"
+                )]
+            )
+        )
+
     elif event.message.text == 'BOT 使用方法':
+        usage_text = (
+            "📖 嗨，我是動物辨識小助手，這是我的使用流程說明：\n"
+            "1️⃣ 上傳一張動物圖片\n"
+            "2️⃣ 選擇【開始預測】或【開始訓練】\n"
+            " 3️⃣-1️⃣預測：模型將直接預測並回傳結果\n"
+            "➡模型回傳結果後選擇正確與否，可選擇是否將圖片加入訓練\n"
+            " 3️⃣-2️⃣訓練：可將圖片加入模型學習\n"
+            "➡選擇訓練後可以根據你傳送的圖片自行選擇標籤，就可以開始訓練了\n"
+            "4️⃣ 預測或訓練完成後，可重新預測或結束\n"
+            "📷 你也可以輸入「我要看範例圖片」或點擊範例圖片的icon來瀏覽七種動物範例！"
+        )
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="上傳圖片->選擇預測或訓練->模型->結果")]
+                messages=[TextMessage(text=usage_text)]
             )
         )
 
@@ -210,19 +248,20 @@ def Reply_Predict_Result(event):
         flex_json["hero"]["url"]=f"{url}image/{file_path.split('/')[-1]}"
         flex_str = json.dumps(flex_json)
 
+        ch_animal_name = ["🐱貓", "🐶狗", "🦊狐狸", "🐆豹", "🦁獅子", "🐯老虎", "🐺狼"]
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[FlexMessage(alt_text='預測結果', contents=FlexContainer.from_json(flex_str))]
+                messages=[FlexMessage(alt_text='預測結果', contents=FlexContainer.from_json(flex_str)), TextMessage(text = f"根據你傳送的影像，這應該是隻 {ch_animal_name[np.argmax(result, axis=1)[0]]}\n我預測得正確嗎？🤔\n可以透過上方的按鈕告訴我！☝️")]
             )
         )
 
     elif event.message.text == '預測正確' and file_path != "null":
         Confirm = ConfirmTemplate(
-            text="預測正確,是否將圖片加入訓練集?",
+            text="太好了，我答對了～😎\n可以讓我把這張圖片加入訓練集，變得更聰明嗎？📈",
             actions=[
-                PostbackAction(label="是", data="Add", displayText="將影像用做模型訓練"),
-                PostbackAction(label="否", data="Dont Add", displayText="不要將我的影像用作訓練")
+                PostbackAction(label="⭕️", data="Add", displayText="將影像用做模型訓練"),
+                PostbackAction(label="❌", data="Dont Add", displayText="不要將我的影像用作訓練")
             ]
         )
         line_bot_api.reply_message(
@@ -234,10 +273,10 @@ def Reply_Predict_Result(event):
 
     elif event.message.text == '預測錯誤' and file_path != "null":
         Confirm = ConfirmTemplate(
-            text="預測錯誤,是否將圖片加入訓練集?",
+            text="糟糕！我答錯了😢\n要不要讓我學習一下這張圖片，下次答得更準？📚",
             actions=[
-                PostbackAction(label="是", data="Add", displayText="將影像用做模型訓練"),
-                PostbackAction(label="否", data="Dont Add", displayText="不要將我的影像用作訓練")
+                PostbackAction(label="⭕️", data="Add", displayText="將影像用做模型訓練"),
+                PostbackAction(label="❌", data="Dont Add", displayText="不要將我的影像用作訓練")
             ]
         )
         line_bot_api.reply_message(
@@ -266,19 +305,19 @@ def Get_Postback(event):
     if Postback_data == "Add":
         Select_label = QuickReply(
             items=[
-                QuickReplyItem(action=PostbackAction(label="貓", data="0", displayText="這是貓")),
-                QuickReplyItem(action=PostbackAction(label="狗", data="1", displayText="這是狗")),
-                QuickReplyItem(action=PostbackAction(label="狐狸", data="2", displayText="這是狐狸")),
-                QuickReplyItem(action=PostbackAction(label="豹", data="3", displayText="這是豹")),
-                QuickReplyItem(action=PostbackAction(label="獅子", data="4", displayText="這是獅子")),
-                QuickReplyItem(action=PostbackAction(label="老虎", data="5", displayText="這是老虎")),
-                QuickReplyItem(action=PostbackAction(label="狼", data="6", displayText="這是狼"))
+                QuickReplyItem(action=PostbackAction(label="🐱貓", data="0", displayText="這是貓")),
+                QuickReplyItem(action=PostbackAction(label="🐶狗", data="1", displayText="這是狗")),
+                QuickReplyItem(action=PostbackAction(label="🦊狐狸", data="2", displayText="這是狐狸")),
+                QuickReplyItem(action=PostbackAction(label="🐆豹", data="3", displayText="這是豹")),
+                QuickReplyItem(action=PostbackAction(label="🦁獅子", data="4", displayText="這是獅子")),
+                QuickReplyItem(action=PostbackAction(label="🐯老虎", data="5", displayText="這是老虎")),
+                QuickReplyItem(action=PostbackAction(label="🐺狼", data="6", displayText="這是狼"))
             ]
         )
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="選擇這張圖片的標籤", quickReply=Select_label)],
+                messages=[TextMessage(text="這張圖是什麼動物呢？\n幫我選一個吧～📌", quickReply=Select_label)],
             )
         )
 
@@ -292,14 +331,38 @@ def Get_Postback(event):
             title="這是 "+ label_list[labels],
             text="正確無誤?",
             actions=[
-                PostbackAction(label="正確,開始訓練", data="Start train", displayText="正確"),
-                PostbackAction(label="有誤,重新選擇", data="Add", displayText="重新選擇")
+                PostbackAction(label="✅ 確認無誤，進行訓練", data="Start train", displayText="正確"),
+                PostbackAction(label="🔄 標籤不對，我要再選一次", data="Add", displayText="重新選擇")
             ]
         )
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
                 messages=[TemplateMessage(altText="ERROR", template=Show_Chosen)]
+            )
+        )
+    
+    elif Postback_data in ["cat", "dog", "fox", "leopard", "lion", "tiger", "wolf"]:
+        animal_name = {
+            "cat": "貓",
+            "dog": "狗",
+            "fox": "狐狸",
+            "leopard": "豹",
+            "lion": "獅子",
+            "tiger": "老虎",
+            "wolf": "狼"
+        }
+        rand_int = random.randint(1, 10)
+        url = request.root_url.replace("http", "https")
+        img_url = url + f"/image/random_sample_img/{Postback_data}_{rand_int}.jpg"
+        chinese_name = animal_name[Postback_data]
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken = event.reply_token,
+                messages=[
+                    TextMessage(text=f"這是{chinese_name}的範例圖片 🐾"),
+                    ImageMessage(originalContentUrl=img_url, previewImageUrl=img_url)
+                ]
             )
         )
     
@@ -320,7 +383,7 @@ def Get_Postback(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="訓練完成,需要重新預測嗎?", quickReply=Show_repredict_select)]
+                messages=[TextMessage(text="訓練完成囉！需要重新預測一次看看嗎？🔁", quickReply=Show_repredict_select)]
             )
         )
 
@@ -328,7 +391,7 @@ def Get_Postback(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="不加入訓練,系統結束")]
+                messages=[TextMessage(text="好的，這張圖片就不加入訓練囉！感謝你的使用～ 😊\n等你再出題考考我～🧠")]
             )
         )
 
@@ -336,7 +399,7 @@ def Get_Postback(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="系統結束")]
+                messages=[TextMessage(text="系統結束囉～謝謝你的使用😊")]
             )
         )
 
