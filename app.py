@@ -257,17 +257,23 @@ def Reply_Predict_Result(event):
         )
 
     elif event.message.text == '預測正確' and file_path != "null":
-        Confirm = ConfirmTemplate(
-            text="太好了，我答對了～😎\n可以讓我把這張圖片加入訓練集，變得更聰明嗎？📈",
-            actions=[
-                PostbackAction(label="⭕️", data="Add", displayText="將影像用做模型訓練"),
-                PostbackAction(label="❌", data="Dont Add", displayText="不要將我的影像用作訓練")
-            ]
-        )
+        # Confirm = ConfirmTemplate(
+        #     text="太好了，我答對了～😎\n可以讓我把這張圖片加入訓練集，變得更聰明嗎？📈",
+        #     actions=[
+        #         PostbackAction(label="⭕️", data="Add", displayText="將影像用做模型訓練"),
+        #         PostbackAction(label="❌", data="Dont Add", displayText="不要將我的影像用作訓練")
+        #     ]
+        # )
+        # line_bot_api.reply_message(
+        #     ReplyMessageRequest(
+        #         replyToken=event.reply_token,
+        #         messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+        #     )
+        # )
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TemplateMessage(alt_text="發生錯誤!", template=Confirm)]
+                messages=[TextMessage(text="太棒了，我答對了呢～🎯\n有需要再幫忙辨識的話，隨時再傳給我吧！🐾")]
             )
         )
 
@@ -290,7 +296,7 @@ def Reply_Predict_Result(event):
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken=event.reply_token,
-                messages=[TextMessage(text="指令錯誤或尚未上傳圖片")]
+                messages=[TextMessage(text=f"指令錯誤或尚未上傳圖片 {file_path}")]
             )
         )
 
@@ -354,18 +360,50 @@ def Get_Postback(event):
         }
         rand_int = random.randint(1, 10)
         url = request.root_url.replace("http", "https")
+        global img_url
+        global local_img_url
+        local_img_url = f"./image/random_sample_img/{Postback_data}_{rand_int}.jpg"
         img_url = url + f"/image/random_sample_img/{Postback_data}_{rand_int}.jpg"
         chinese_name = animal_name[Postback_data]
+        Sample_img_predict = QuickReply(
+            items=[
+                QuickReplyItem(action=PostbackAction(label="Yes", displayText="用範例圖片預測一次", data="Sample Img Predict")),
+                QuickReplyItem(action=PostbackAction(label="No", displayText="不需要", data="Exit the System"))
+            ]
+        )
         line_bot_api.reply_message(
             ReplyMessageRequest(
                 replyToken = event.reply_token,
                 messages=[
                     TextMessage(text=f"這是{chinese_name}的範例圖片 🐾"),
-                    ImageMessage(originalContentUrl=img_url, previewImageUrl=img_url)
+                    ImageMessage(originalContentUrl=img_url, previewImageUrl=img_url),
+                    TextMessage(text="需要用範例圖片模擬預測一次嗎?🤔",quickReply=Sample_img_predict)
                 ]
             )
         )
-    
+
+    elif Postback_data == "Sample Img Predict":
+        img = Img_Process(local_img_url)
+        model = Load_CnnModel()
+        result = model.predict(img)
+        Clear_model(model)
+
+        url = request.root_url.replace("http", "https")
+        flex_json = json.load(open("./image/flex/Sample_Img_Flex.json", "r", encoding="utf-8"))
+        for i,item in enumerate(flex_json["body"]["contents"][1]["contents"]):
+            item["contents"][0]["url"]=f"{url}image/flex/{item['contents'][1]['text']}.jpg"
+            item["contents"][2]["text"]=f"Percentage: {result[0][i] * 100:.2f}"
+        flex_json["hero"]["url"]=img_url
+        flex_str = json.dumps(flex_json)
+
+        ch_animal_name = ["🐱貓", "🐶狗", "🦊狐狸", "🐆豹", "🦁獅子", "🐯老虎", "🐺狼"]
+        line_bot_api.reply_message(
+            ReplyMessageRequest(
+                replyToken=event.reply_token,
+                messages=[FlexMessage(alt_text='預測結果', contents=FlexContainer.from_json(flex_str)), TextMessage(text = f"這張範例圖片預測結果為：\n{ch_animal_name[np.argmax(result, axis=1)[0]]}")]
+            )
+        )
+
     elif Postback_data == "Start train":
         img = Img_Process(file_path)
         model = Load_CnnModel()

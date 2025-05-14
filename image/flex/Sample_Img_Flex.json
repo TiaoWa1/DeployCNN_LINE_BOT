@@ -1,0 +1,230 @@
+{
+    "type": "bubble",
+    "hero": {
+        "type": "image",
+        "url": "{url_placeholder}{file_path_placeholder}",
+        "size": "full",
+        "aspectRatio": "20:13",
+        "aspectMode": "cover",
+        "action": {
+        "type": "uri",
+        "label": "Action",
+        "uri": "https://github.com/TiaoWa1/DeployCNN_LINE_BOT"
+        }
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "md",
+        "action": {
+        "type": "uri",
+        "label": "Action",
+        "uri": "https://github.com/TiaoWa1/DeployCNN_LINE_BOT"
+        },
+        "contents": [
+        {
+            "type": "text",
+            "text": "Prediction results",
+            "weight": "bold",
+            "size": "xl",
+            "contents": []
+        },
+        {
+            "type": "box",
+            "layout": "vertical",
+            "spacing": "sm",
+            "contents": [
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Cat",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Dog",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Fox",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Leopard",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Lion",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Tiger",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "baseline",
+                "contents": [
+                {
+                    "type": "icon",
+                    "url": "{url_placeholder}",
+                    "size": "xl"
+                },
+                {
+                    "type": "text",
+                    "text": "Wolf",
+                    "weight": "bold",
+                    "flex": 0,
+                    "margin": "sm",
+                    "contents": []
+                },
+                {
+                    "type": "text",
+                    "text": "Percentage: {cat_percentage}",
+                    "size": "sm",
+                    "color": "#AAAAAA",
+                    "align": "end",
+                    "contents": []
+                }
+                ]
+            }
+            ]
+        }
+        ]
+    }
+}
